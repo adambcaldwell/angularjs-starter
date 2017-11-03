@@ -6,9 +6,10 @@
 
 const webpack = require('webpack');
 const helpers = require('./helpers');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+// const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 const ENV = JSON.stringify(process.env.NODE_ENV);
 
@@ -20,8 +21,8 @@ module.exports = function (options) {
         },
         devtool: 'source-map',
         output: {
-            path: helpers.root('build'),
-            filename: '[name].bundle.js',
+            path: helpers.root('dist'),
+            filename: ENV === 'production' ? '[name].[hash].js' : '[name].bundle.js',
             sourceMapFilename: '[name].map'
         },
         resolve: {
@@ -33,56 +34,20 @@ module.exports = function (options) {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'window.jQuery': 'jquery',
-                angular: 'angular',
                 Popper: ['popper.js', 'default']
             }),
 
             new webpack.DefinePlugin({
-                'process.env': {
-                    'NODE_ENV': ENV
-                }
+                'process.env.NODE_ENV': ENV
             }),
-
-            // Copy CSS/Font/etc.. Dependencies into the proper dist folders.
-            new CopyWebpackPlugin([
-                    {from: 'src/media', to: 'media'},
-                    // Fonts
-                    {from: 'node_modules/font-awesome/fonts/FontAwesome.otf', to: 'media/fonts'},
-                    {from: 'node_modules/font-awesome/fonts/fontawesome-webfont.eot', to: 'media/fonts'},
-                    {from: 'node_modules/font-awesome/fonts/fontawesome-webfont.woff', to: 'media/fonts'},
-                    {from: 'node_modules/font-awesome/fonts/fontawesome-webfont.woff2', to: 'media/fonts'},
-                    {from: 'node_modules/font-awesome/fonts/fontawesome-webfont.ttf', to: 'media/fonts'},
-                    // CSS
-                    {from: 'node_modules/font-awesome/css/font-awesome.css', to: 'media/css'},
-                    {from: 'node_modules/bootstrap/dist/css/bootstrap.css', to: 'media/css'}
-                ],
-                {
-                    ignore: [
-                        '*.less',
-                        'src/media/css/less/**/*'
-                    ]
-                }),
 
             new HtmlWebpackPlugin({
-                hash: true,
-                title: 'Bootstrap4',
-                // favicon: 'src/media/images/favicon.ico',
-                devServer: 'http://localhost:8080',
-                chunksSortMode: 'none',
-                template: 'src/index.html'
-
+                template: 'src/index.html',
+                title: 'AngularJS Starter',
+                chunksSortMode: 'none'
             }),
 
-            // Include assets (usually those copied by CopyWebpackPlugin)
-            new HtmlWebpackIncludeAssetsPlugin({
-                assets: [
-                    'media/css/font-awesome.css',
-                    'media/css/bootstrap.css',
-                    'media/css/style.css'
-                ],
-                append: true,
-                hash: true
-            })
+            new CleanWebpackPlugin(['dist']),
         ],
         module: {
             rules: [
@@ -103,6 +68,10 @@ module.exports = function (options) {
                             }
                         }
                     ]
+                },
+                {
+                    test: /\.css$/,
+                    loader: 'style-loader!css-loader'
                 },
                 {
                     test: /\.html$/,

@@ -16,6 +16,7 @@ const LayoutModule = angular
 
         $stateProvider
             .state({
+                parent: 'app',
                 name: 'layout',
                 url: 'layout',
                 component: 'layoutComponent'

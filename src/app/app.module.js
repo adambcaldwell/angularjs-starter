@@ -14,7 +14,7 @@ import {appVersion} from './app.constants';
  */
 
 const AppModule = angular
-    .module('app.bootstrap', [
+    .module('app.starter', [
         CommonModule,
         ComponentsModule,
         SharedModule,
