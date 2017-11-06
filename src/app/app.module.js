@@ -20,7 +20,7 @@ const AppModule = angular
         SharedModule,
         uiRouter
     ])
-    .config(/*@ngInject*/ ($stateProvider, $urlRouterProvider) => {
+    .config(/*@ngInject*/ ($stateProvider) => {
 
         $stateProvider
             .state({
@@ -30,8 +30,7 @@ const AppModule = angular
                 component: 'appComponent'
             });
 
-        // Default behavior
-        $urlRouterProvider.otherwise('/layout');
+
 
     })
     .config(/*@ngInject*/ ($compileProvider) => {

@@ -12,16 +12,18 @@ const LayoutModule = angular
     .module('layout.module', [
         uiRouter
     ])
-    .config(/*@ngInject*/ ($stateProvider) => {
+    .config(/*@ngInject*/ ($stateProvider, $urlRouterProvider) => {
 
         $stateProvider
             .state({
                 parent: 'app',
                 name: 'layout',
-                url: 'layout',
+                url: '/layout',
                 component: 'layoutComponent'
             });
 
+        // Default behavior
+        $urlRouterProvider.otherwise('/layout');
     })
     .component('layoutComponent', LayoutComponent)
     .name;

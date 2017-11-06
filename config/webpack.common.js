@@ -7,9 +7,7 @@
 const webpack = require('webpack');
 const helpers = require('./helpers');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 const ENV = JSON.stringify(process.env.NODE_ENV);
 
@@ -31,9 +29,6 @@ module.exports = function (options) {
         },
         plugins: [
             new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'window.jQuery': 'jquery',
                 Popper: ['popper.js', 'default']
             }),
 
@@ -62,7 +57,7 @@ module.exports = function (options) {
                         {
                             loader: 'babel-loader',
                             options: {
-                                presets: ['es2015'],
+                                presets: ['env'],
                                 // Allows use of ES6 Object Spread Operator
                                 plugins: ['transform-object-rest-spread']
                             }
