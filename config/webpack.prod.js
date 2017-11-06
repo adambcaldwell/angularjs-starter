@@ -4,29 +4,24 @@
  * @author adam.caldwell
  */
 
+const commonConfig = require("./webpack.common.js");
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require("webpack");
 const webpackMerge = require("webpack-merge");
-const commonConfig = require("./webpack.common.js");
 
 module.exports = (options) => {
     return webpackMerge(commonConfig({
             plugins: [
-                new webpack.LoaderOptionsPlugin({
-                    minimize: true,
-                    debug: false
-                }),
-                new webpack.optimize.UglifyJsPlugin({
+                new UglifyJSPlugin({
                     parallel: true,
                     comments: false,
                     sourceMap: true,
                     uglifyOptions: {
-                        ie8: false,
                         output: {
                             comments: false,
-                            beautify: false,
-                            compress: true,
-                            warnings: true
-                        }
+                            beautify: false
+                        },
+                        ecma: 5
                     }
                 })
             ]

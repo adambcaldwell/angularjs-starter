@@ -29,9 +29,6 @@ const AppModule = angular
                 url: '',
                 component: 'appComponent'
             });
-
-
-
     })
     .config(/*@ngInject*/ ($compileProvider) => {
         // Directives should be restricted to the element name.

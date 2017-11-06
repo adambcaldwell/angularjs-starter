@@ -39,7 +39,7 @@ module.exports = function (options) {
             new HtmlWebpackPlugin({
                 template: 'src/index.html',
                 title: 'AngularJS Starter',
-                chunksSortMode: 'none'
+                chunksSortMode: 'auto'
             }),
 
             new CleanWebpackPlugin(['dist']),
