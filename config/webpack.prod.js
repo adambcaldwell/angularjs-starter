@@ -14,14 +14,13 @@ module.exports = (options) => {
             plugins: [
                 new UglifyJSPlugin({
                     parallel: true,
-                    comments: false,
                     sourceMap: true,
                     uglifyOptions: {
+                        ecma: 5,
                         output: {
                             comments: false,
                             beautify: false
-                        },
-                        ecma: 5
+                        }
                     }
                 })
             ]
