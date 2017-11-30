@@ -7,6 +7,7 @@
 const webpack = require('webpack');
 const helpers = require('./helpers');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const ENV = JSON.stringify(process.env.NODE_ENV);
@@ -28,6 +29,8 @@ module.exports = function (options) {
             modules: [helpers.root('src'), 'node_modules']
         },
         plugins: [
+            new ExtractTextPlugin(ENV === 'production' ? 'bundle.[hash].css' : 'bundle.css'),
+
             new webpack.ProvidePlugin({
                 Popper: ['popper.js', 'default']
             }),
@@ -66,7 +69,10 @@ module.exports = function (options) {
                 },
                 {
                     test: /\.css$/,
-                    loader: 'style-loader!css-loader'
+                    use: ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: 'css-loader'
+                    })
                 },
                 {
                     test: /\.html$/,
