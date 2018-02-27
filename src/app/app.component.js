@@ -1,3 +1,7 @@
+// Import custom CSS/Scss before bootstrap (per bootstrap docs)
+
+import './../../node_modules/bootstrap/scss/bootstrap.scss';
+
 /**
  * Primary App Component
  * @author adam.caldwell

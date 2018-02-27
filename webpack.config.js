@@ -1,5 +1,9 @@
 /**
- * Webpack Configuration
+ *  Environment based webpack config:
+ *      Production
+ *      Development
+ *      Local (Default) - webpack dev server configuration
+ *
  * @author adam.caldwell
  */
 
@@ -9,6 +13,9 @@ switch (process.env.NODE_ENV) {
         module.exports = require('./config/webpack.prod')();
         break;
     case 'development':
-    default:
         module.exports = require('./config/webpack.dev')();
+        break;
+    case 'local':
+    default:
+        module.exports = require('./config/webpack.local')();
 }

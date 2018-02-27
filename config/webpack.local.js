@@ -1,9 +1,9 @@
 /**
- * Development specific configurations
+ * Local specific configurations
+ *  For use with webpack dev server
  * @author adam.caldwell
  */
 
-const ArchivePlugin = require('webpack-archive-plugin');
 const commonConfig = require('./webpack.common.js');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpackMerge = require('webpack-merge');
@@ -14,22 +14,17 @@ module.exports = (options) => {
         {
             mode: 'development',
             output: {
-                filename: '[name].[hash].js',
+                filename: '[name].bundle.js',
             },
             devtool: 'inline-source-map',
+            devServer: {
+                contentBase: './dist'
+            },
             plugins: [
-
                 new ExtractTextPlugin({
-                    filename: 'style.[hash].css',
+                    filename: 'style.css',
                     allChunks: true
-                }),
-
-                // Create a deployable *.tar.gz file
-                new ArchivePlugin({
-                    output: 'angularjs-starter',
-                    format: 'tar'
                 })
-
             ]
         }
     );

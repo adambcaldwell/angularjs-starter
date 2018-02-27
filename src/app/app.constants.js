@@ -5,6 +5,6 @@
  */
 
 // - - - App Version - - -
-const appVersion = '1.0.0';
+const appVersion = require('../../package').version;
 
 export {appVersion};

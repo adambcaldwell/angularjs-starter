@@ -4,32 +4,50 @@
  * @author adam.caldwell
  */
 
-const webpack = require("webpack");
-const webpackMerge = require("webpack-merge");
+const ArchivePlugin = require('webpack-archive-plugin');
 const commonConfig = require("./webpack.common.js");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpackMerge = require("webpack-merge");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = (options) => {
-    return webpackMerge(commonConfig({
+module.exports = function (options) {
+    return webpackMerge(
+        commonConfig,
+        {
+            mode: 'production',
+            output: {
+                filename: '[name].[hash].js',
+            },
             plugins: [
-                new webpack.LoaderOptionsPlugin({
-                    minimize: true,
-                    debug: false
-                }),
-                new webpack.optimize.UglifyJsPlugin({
+                new UglifyJsPlugin({
                     parallel: true,
-                    comments: false,
                     sourceMap: true,
                     uglifyOptions: {
-                        ie8: false,
+                        ecma: 5,
                         output: {
                             comments: false,
-                            beautify: false,
-                            compress: true,
-                            warnings: true
+                            beautify: false
                         }
                     }
+                }),
+
+                // TODO: Look into using this to exclude some dev-chunks?
+                // new HtmlWebpackPlugin({
+                //     excludeChunks: ['dev-helper']
+                // }),
+
+                new ExtractTextPlugin({
+                    filename: 'style.[hash].css',
+                    allChunks: true
+                }),
+
+                // Create a deployable *.tar.gz file
+                new ArchivePlugin({
+                    output: 'angularjs-starter',
+                    format: 'tar'
                 })
+
             ]
-        })
-    )
+        }
+    );
 };

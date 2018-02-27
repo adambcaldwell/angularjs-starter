@@ -4,92 +4,96 @@
  * @author adam.caldwell
  */
 
-const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const helpers = require('./helpers');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+const webpack = require('webpack');
 
 const ENV = JSON.stringify(process.env.NODE_ENV);
 
-module.exports = function (options) {
-    return {
-        entry: {
-            'app': helpers.root('src', 'app', 'app.module.js'),
-            'vendor': helpers.root('src', 'app', 'vendor.js'),
-        },
-        devtool: 'source-map',
-        output: {
-            path: helpers.root('dist'),
-            filename: ENV === 'production' ? '[name].[hash].js' : '[name].bundle.js',
-            sourceMapFilename: '[name].map'
-        },
-        resolve: {
-            extensions: ['.js', '.json'],
-            modules: [helpers.root('src'), 'node_modules']
-        },
-        plugins: [
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'window.jQuery': 'jquery',
-                Popper: ['popper.js', 'default']
-            }),
+module.exports = {
+    entry: {
+        'app': helpers.root('src', 'app', 'app.module.js'),
+        'vendor': helpers.root('src', 'app', 'vendor.js')
+    },
+    devtool: 'source-map',
+    output: {
+        path: helpers.root('dist'),
+        sourceMapFilename: '[name].map'
+    },
+    resolve: {
+        extensions: ['.js', '.json'],
+        modules: [helpers.root('src'), 'node_modules']
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': ENV
+        }),
 
-            new webpack.DefinePlugin({
-                'process.env.NODE_ENV': ENV
-            }),
+        new HtmlWebpackPlugin({
+            template: 'src/index.html',
+            title: 'AngularJS Starter/Bootstrap4'
+        })
 
-            new HtmlWebpackPlugin({
-                template: 'src/index.html',
-                title: 'AngularJS Starter',
-                chunksSortMode: 'none'
-            }),
-
-            new CleanWebpackPlugin(['dist']),
-        ],
-        module: {
-            rules: [
-                // Required:
-                // Inject AngularJS dependencies (via /*@ngInject*/ annotations)
-                // Transpile js code from es6 to es5 (for browser compatibility).
-                {
-                    test: /\.js$/,
-                    exclude: [/node_modules/],
-                    use: [
-                        {loader: 'ng-annotate-loader'},
-                        {
-                            loader: 'babel-loader',
-                            options: {
-                                presets: ['es2015'],
-                                // Allows use of ES6 Object Spread Operator
-                                plugins: ['transform-object-rest-spread']
-                            }
+        // Uncomment this if you want to run the bundle analyzer to examine how webpack is bundling files.
+        // ,new BundleAnalyzerPlugin()
+    ],
+    module: {
+        rules: [
+            // Inject AngularJS dependencies (via /*@ngInject*/ annotations)
+            // Transpile js code from es6 to es5 (for browser compatibility).
+            {
+                test: /\.js$/,
+                exclude: [/node_modules/],
+                use: [
+                    {loader: 'ng-annotate-loader'},
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['env'],
+                            // Allows use of ES6 Object Spread Operator
+                            plugins: ['transform-object-rest-spread']
                         }
-                    ]
-                },
-                {
-                    test: /\.css$/,
-                    loader: 'style-loader!css-loader'
-                },
-                {
-                    test: /\.html$/,
-                    use: [
-                        {loader: 'ngtemplate-loader?relativeTo=' + helpers.root('src')},
-                        {loader: 'raw-loader'}
-                    ],
-                    exclude: [helpers.root('src/index.html')]
-                },
-                {
-                    test: /\.(ttf|otf|eot|svg|woff|woff2?)$/,
-                    loader: 'url-loader'
-                },
-                {
-                    test: /\.(jpg|png|gif)$/,
-                    loader: 'file-loader'
-                }
-            ]
-        }
+                    }
+                ]
+            }, {
+                test: /\.html$/,
+                use: [
+                    {loader: 'ngtemplate-loader?relativeTo=' + helpers.root('src')},
+                    {loader: 'raw-loader'}
+                ],
+                exclude: [helpers.root('src/index.html')]
+            }, {
+                test: /\.(jpg|png|gif|ttf|otf|eot|svg|woff|woff2?)$/,
+                loader: 'file-loader'
+                // }, {
+                //     test: /\.css$/,
+                //     use: ExtractTextPlugin.extract({
+                //         fallback: 'style-loader',
+                //         use: 'css-loader'
+                //     })
+            }, {
+                test: /\.scss$/,
+                use: [{
+                    loader: 'style-loader',     // inject CSS to page
+                }, {
+                    loader: 'css-loader',       // translates CSS into CommonJS modules
+                }, {
+                    loader: 'postcss-loader',   // Run post css actions
+                    options: {
+                        plugins: function () {  // post css plugins, can be exported to postcss.config.js
+                            return [
+                                require('precss'),
+                                require('autoprefixer')
+                            ];
+                        }
+                    }
+                }, {
+                    loader: 'sass-loader'       // compiles Sass to CSS
+                }]
+            },
+
+        ]
     }
 };
