@@ -20,7 +20,7 @@ const AppModule = angular
         SharedModule,
         uiRouter
     ])
-    .config(/*@ngInject*/ ($stateProvider, $urlRouterProvider) => {
+    .config(/*@ngInject*/ ($stateProvider) => {
 
         $stateProvider
             .state({
@@ -29,10 +29,6 @@ const AppModule = angular
                 url: '',
                 component: 'appComponent'
             });
-
-        // Default behavior
-        $urlRouterProvider.otherwise('/layout');
-
     })
     .config(/*@ngInject*/ ($compileProvider) => {
         // Directives should be restricted to the element name.
